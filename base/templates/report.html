@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% load crispy_forms_tags %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+<link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<p></p>
+<div class="container">
+    <form method = "post" action="{% url 'report' %}">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="card ">
+                <div class="card-header">
+                    <h3>Yearly Report</h3>
+                    <select style="width: 300px;" data-placeholder="Select year" multiple="multiple" name="yearly-select" class="chosen-select" id="yearly-select">
+                        {% for option in year_options %}
+                        <option>{{option.placed_year}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if yearly_bar %}
+                <div class="card-block filter yearly-bar">
+                    {% autoescape off %}     
+                    {{yearly_bar}}  
+                    {% endautoescape %}
+                </div>
+                {% else %}
+                <div class="card-block" style="height: 490px;">
+                </div>
+                {% endif %}
+                {% if yearly_pie %}
+                <div class="card-block filter yearly-pie">
+                    {% autoescape off %}     
+                    {{yearly_pie}}  
+                    {% endautoescape %}
+                </div>
+                {% endif %}
+                {% if yearly_scatter %}
+                <div class="card-block filter yearly-scatter">
+                    {% autoescape off %}     
+                    {{yearly_scatter}}  
+                    {% endautoescape %}
+                </div>
+                <div class="card-block">
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="yearly-bar">Bar Plot</button>
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="yearly-pie">Pie Plot</button>
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="yearly-scatter">Scatter Plot</button>
+                </div>
+                {% endif %}
+                <br>
+                <div class="card-footer">
+                    <button type="submit" name="yearly" value="1" class="btn btn-primary me-2">Generate Report</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="col-lg-6 col-md-6">
+            <div class="card ">
+                <div class="card-header">
+                    <h3>Company Report</h3>
+                    <select style="width: 300px;" data-placeholder="Select company" multiple="multiple" name="company-select" class="chosen-select" id="company-select">
+                        {% for option in company_options %}
+                        <option>{{option.placement_application__company__name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if company_bar %}
+                <div class="card-block filter company-bar">
+                    {% autoescape off %}     
+                    {{company_bar}}  
+                    {% endautoescape %}
+                </div>
+                {% else %}
+                <div class="card-block" style="height: 490px;">
+                </div>
+                {% endif %}
+                {% if company_pie %}
+                <div class="card-block filter company-pie">
+                    {% autoescape off %}     
+                    {{company_pie}}  
+                    {% endautoescape %}
+                </div>
+                {% endif %}
+                {% if company_scatter %}
+                <div class="card-block filter company-scatter">
+                    {% autoescape off %}     
+                    {{company_scatter}}  
+                    {% endautoescape %}
+                </div>
+                <div class="card-block">
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="company-bar">Bar Plot</button>
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="company-pie">Pie Plot</button>
+                    <button  type="button" class="btn btn-primary filter-button" data-filter="company-scatter">Scatter Plot</button>
+                </div>
+                {% endif %}
+                <br>
+                <div class="card-footer">
+                    <button type="submit" name="company" value="1" class="btn btn-primary">Generate Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+
+<script>
+    $(".chosen-select").chosen({
+    no_results_text: "Oops, nothing found!"
+  })
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+$(document).ready(function(){
+    $('.filter').hide();
+    $('.filter.yearly-bar').show()
+    $('.filter.company-bar').show()
+    
+$(".filter-button").click(function(){
+    var value = $(this).attr('data-filter');
+    $('.filter').not('.'+value).hide('3000');
+    $('.filter').filter('.'+value).show('3000');
+});
+
+});
+</script>
+{% endblock content %}
+

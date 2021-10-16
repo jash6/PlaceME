@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% load crispy_forms_tags %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+<link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+<link href="{% static 'css/placement_status.css' %}" rel="stylesheet"> 
+<style>
+  th {
+  text-align: center;
+  vertical-align:middle;
+}
+</style>
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col md-6">
+            <input type="text" id="myInput" onkeyup="search()" placeholder="Search for names..">
+        </div>
+    </div>
+    <p></p>
+    <table class="table table-bordered table-hover table-info" id="myTable">
+        <thead>
+        <tr>
+            <th rowspan="2">Roll No</th>
+            <th rowspan="2">Name</th>
+            <th colspan="2">Day 0 Offers</th>
+            <th colspan="2">Day 1 Offers</th>
+            <th colspan="2">Day 2 Offers</th>
+            <th rowspan="2">Submit</th>
+        </tr>
+        <tr>
+          <th>Send Offers</th>
+          <th>Sent</th>
+          <th>Send Offers</th>
+          <th>Sent</th>
+          <th>Send Offers</th>
+          <th>Sent</th>
+      </tr>
+        </thead>
+        {% if statuses %}
+        <tbody>
+          <form method = "post" action="{% url 'placement_status' %}">
+          {% csrf_token %}
+          {% for key,values in statuses.items %}
+            <tr>
+                <td style="width: 100px;">{{key}}</td>
+                <td style="width: 400px;">{{values.0}}</td>
+                <td style="width: 175px;">
+                  <div class="input-group input-group-sm mb-2">
+                  <select style="width: 125px;" data-placeholder="Select Company" multiple="multiple" name="{{key}}-Day0" class="chosen-select" id="{{key}}-Day0">
+                    {% for offer in values.2 %}
+                    <option selected>{{offer}}</option>
+                    {% endfor %}
+                    {% for company in values.1 %}
+                    <option>{{company}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                </td>
+                <td style="width: 250px;">
+                <ul>
+                  {% for offer in values.2 %}
+                    <li>{{offer}}</li>
+                  {% endfor %}
+                <ul>
+                </td>
+                <td style="width: 175px;">
+                  <div class="input-group input-group-sm mb-2">
+                    <select style="width: 125px;" data-placeholder="Select Company" multiple name="{{key}}-Day1" class="chosen-select" id="{{key}}-Day1">
+                    {% for offer in values.4 %}
+                    <option selected>{{offer}}</option>
+                    {% endfor %}
+                    {% for company in values.3 %}
+                    <option>{{company}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                </td>
+                <td style="width: 250px;">
+                  <ul>
+                    {% for offer in values.4 %}
+                      <li>{{offer}}</li>
+                    {% endfor %}
+                  <ul>
+                </td>
+                <td style="width: 175px;">
+                  <div class="input-group input-group-sm mb-2">
+                    <select style="width: 125px;" data-placeholder="Select Company" multiple name="{{key}}-Day2" class="chosen-select" id="{{key}}-Day2">
+                    {% for offer in values.6 %}
+                    <option selected>{{offer}}</option>
+                    {% endfor %}
+                    {% for company in values.5 %}
+                    <option>{{company}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                </td>
+                <td style="width: 250px;">
+                  <ul>
+                    {% for offer in values.6 %}
+                      <li>{{offer}}</li>
+                    {% endfor %}
+                  <ul>
+                </td>
+                <td style="width: 175px;">
+                  <button type="submit" class="btn btn-primary" name="offers" value="{{key}}">Send Offers</button>
+                </td>
+            </tr>
+          {% endfor %}
+          </form>
+        </tbody>
+        {% endif %}
+    </table>
+</div>
+
+
+<script>
+    function search() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+    
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>
+
+<script>
+  $(".chosen-select").chosen({
+  no_results_text: "Oops, nothing found!"
+})
+</script>
+
+
+{% endblock content %}
